@@ -1,0 +1,1 @@
+<p class="workArea">Neki text placeholder za shopping</p>
