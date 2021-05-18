@@ -27,11 +27,6 @@
         var text = window.document.getElementById("txtContents").value;
 
         var xmlhttp = new XMLHttpRequest();
-        // xmlhttp.onreadystatechange = function() {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         document.getElementById("contentHolder").innerHTML = this.responseText;
-        //     }
-        // };
 
         xmlhttp.open("POST", "notepadContent.php?ID=" + selectedValue, true);
         xmlhttp.setRequestHeader("Content-type", "text/html");
