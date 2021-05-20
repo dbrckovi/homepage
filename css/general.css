@@ -6,6 +6,22 @@ body {
     background-color: white;
 }
 
+.Row {
+    display: table;
+    width: 100%; 
+    table-layout: fixed; 
+    border-spacing: 10px; 
+}
+
+.Column {
+    display: table-cell;
+}
+
+.invisible {
+    color: transparent;
+    background-color: transparent;
+}
+
 .textBox{
     background-color: white;
     width: 100%;
