@@ -52,7 +52,7 @@ class database
             $row = $result->fetch_assoc();
             return $row["Contents"];
         } else {
-            echo null;
+            return null;
         }
         $conn->close();
     }

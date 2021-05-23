@@ -1,3 +1,5 @@
+<?php include_once("code\common.php"); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,73 +14,41 @@
     <title>brc.com.hr</title>
 </head>
 
+<script>
+
+</script>
+
 <body>
-    <?php
-    include_once('common.php');
-    generateMainButtons();
-    generatePageContent();
-    ?>
+
+    <div class="Row">
+        <a class="Column blueButton" href="index.php?pageID=notepad">Notepad</a>
+        <a class="Column blueButton" href="index.php?pageID=shopping">Shopping</a>
+        <a class="Column blueButton" href="index.php?pageID=lists">Lists</a>
+        <a class="Column blueButton" href="index.php?pageID=debug">Debug</a>
+        <a class="Column blueButton" href="index.php?pageID=info">Info</a>
+    </div>
+
+    <div id="divContent" style="width: 100%;">
+        <?php getContent(); ?>
+    </div>
+
 </body>
 
 </html>
 
-<?php 
+<?php
 
-
-function generateMainButtons()
+function getContent()
 {
-    echo "<div>";
-    generateButton(PAGE_NOTEPAD, TITLE_NOTEPAD);
-    generateButton(PAGE_SHOPPING, TITLE_SHOPPING);
-    generateButton(PAGE_LISTS, TITLE_LISTS);
-    generateButton(PAGE_DEBUG, TITLE_DEBUG);
-    generateButton(PAGE_INFO, TITLE_INFO);
-    echo "</div>";
-}
-
-function generateButton($pageID, $text)
-{
-    $currentPageID = common::getCurrentPageID();
-    $className = ($currentPageID == $pageID) ? "greenButton" : "blueButton";
-    echo "<a class='" . $className . "' href='?pageID=" . $pageID . "'>" . $text . "</a>";
-}       
-
-function generatePageContent()
-{
-    $pageID = common::getCurrentPageID();
-
-    $pageTitle = null;
-    $pageSource = null;
-
-    switch ($pageID) {
-        case PAGE_NOTEPAD:
-            $pageTitle = TITLE_NOTEPAD;
-            $pageSource = 'notepad.php';
-            break;
-        case PAGE_SHOPPING:
-            $pageTitle = TITLE_SHOPPING;
-            $pageSource = 'shopping.php';
-            break;
-        case PAGE_LISTS:
-            $pageTitle = TITLE_LISTS;
-            $pageSource = 'lists.php';
-            break;
-        case PAGE_INFO:
-            $pageTitle = TITLE_INFO;
-            $pageSource = 'info.php';
-            break;
-        case PAGE_DEBUG:
-            $pageTitle = TITLE_DEBUG;
-            $pageSource = 'debug.php';
-            break;
+    $pageID = common::getUrlValue("pageID");
+    
+    switch ($pageID)
+    {
+        case "notepad": include("pages/notepad.php"); break;
+        case "shopping": include("pages/shopping.php"); break;
+        case "lists": include("pages/lists.php"); break;
+        case "debug": include("pages/debug.php"); break;
+        case "info": include("pages/info.php"); break;
     }
-
-    echo "<div>
-            <h3>" . $pageTitle . "</h3>
-          </div>";
-
-    include($pageSource);
 }
-
-
 ?>
