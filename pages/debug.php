@@ -23,7 +23,7 @@
 </script>
 
 <div class="Row">
-    <button class="blueButton" onclick="test('GET');">TEST</button>
+    <button class="blueButton" onclick="test();">TEST</button>
 </div>
 
 <textarea ID="txtDebug" style="width: 100%; height:60vh"></textarea>
