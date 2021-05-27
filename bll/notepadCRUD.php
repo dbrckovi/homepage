@@ -1,12 +1,18 @@
 <?php
 
-include_once("..\common.php");
-include_once("..\database.php");
+include_once("..\code\common.php");
+include_once("..\code\database.php");
 
 if (common::isGet())
 {
     $id = common::getUrlValue('ID');
-    echo database::getNotepadContent($id);
+
+    if ($id === null)
+    {
+        $a = database::getNotepadItemNames();
+        echo $a;  
+    } 
+    else echo database::getNotepadContent($id);
 }
 else if (common::isPost())
 {
@@ -20,7 +26,8 @@ else if (common::isPost())
     else
     {
         // update existing
-        echo 'Update '. $id;
+        $contents = file_get_contents('php://input');
+        database::SaveNotepadContent($id, $contents);
     }
 }
 else if (common::isDelete())

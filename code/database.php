@@ -1,6 +1,6 @@
 <?php
 
-include_once("config.php");
+include_once("..\config.php");
 
 class database
 {
@@ -11,6 +11,26 @@ class database
             die("Connection failed: " . $conn->connect_error);
         }
         return $conn;
+    }
+
+    public static function getNotepadItemNames()
+    {
+        $sql = "SELECT ID, Name from Notepad";
+        $ret = "";
+
+        $conn = self::connectToDatabase();
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $ret = $ret . $row["ID"] . "=" . $row["Name"] . "|";
+            }
+
+            $ret = rtrim($ret, "|");
+            return $ret;
+        } else {
+            echo "0 results";
+        }
+        $conn->close();        
     }
 
     /**
