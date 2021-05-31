@@ -1,6 +1,11 @@
 <?php
 class common
 {
+    public const PAGE_NOTEPAD = "notepad";
+    public const PAGE_SHOPPING = "shopping";
+    public const PAGE_LISTS = "lists";
+    public const PAGE_DEBUG = "debug";
+
     public static function getUrlValue($valueName)
     {
         if (isset($_GET[$valueName])) {
@@ -21,5 +26,16 @@ class common
     public static function isDelete()
     {
         return $_SERVER['REQUEST_METHOD'] === 'DELETE';
+    }
+
+    public static function isPageIDValid($pageID)
+    {
+        if (
+            $pageID === common::PAGE_NOTEPAD
+            || $pageID === common::PAGE_SHOPPING
+            || $pageID === common::PAGE_LISTS
+            || $pageID === common::PAGE_DEBUG
+        ) return true;
+        else return false;
     }
 }

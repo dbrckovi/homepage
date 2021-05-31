@@ -1,0 +1,1 @@
+Sadržaj shoppinga

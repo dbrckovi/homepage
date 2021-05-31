@@ -1,24 +1,29 @@
 body {
     background-color: #eeeeff;
     font-family: Consolas;
+    margin: 0px;
 }
 
-h3{
-    text-align: center;
+.buttonPanel {
+    background-color: #111115;
+    color: white;
 }
 
-.workArea{
+.titleBar {
     background-color: white;
+    text-align: center;
+    font-weight: bolder;
+    font-size: large;
 }
 
-.Row {
+.row {
     display: table;
-    /* width: 100%;  */
-    /* table-layout: fixed;  */
-    /* border-spacing: 10px;  */
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 10px;
 }
 
-.Column {
+.col {
     display: table-cell;
 }
 

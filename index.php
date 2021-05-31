@@ -1,4 +1,9 @@
-<?php include_once("code\common.php"); ?>
+<?php
+include_once("code/common.php");
+$pageID = common::getUrlValue("pageID");
+
+if ($pageID === null || common::isPageIDValid($pageID) === false) $pageID = common::PAGE_NOTEPAD;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,27 +14,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/general.css">
-    <link rel="stylesheet" href="css/fonts.css">
-    <link rel="icon" href="favicon.ico">
-    <title>brc.com.hr</title>
+    <title>Document</title>
 </head>
-
-<script>
-
-</script>
 
 <body>
 
-    <div class="Row">
-        <a class="Column blueButton" href="index.php?pageID=notepad">Notepad</a>
-        <a class="Column blueButton" href="index.php?pageID=shopping">Shopping</a>
-        <a class="Column blueButton" href="index.php?pageID=lists">Lists</a>
-        <a class="Column blueButton" href="index.php?pageID=debug">Debug</a>
-        <a class="Column blueButton" href="index.php?pageID=info">Info</a>
+    <div id="pnlButtons" class="row buttonPanel">
+        <?php generateButtons(); ?>
     </div>
 
-    <div id="divContent" style="width: 100%;">
-        <?php getContent(); ?>
+    <div class="titleBar"><?php echo getPageTitle($pageID); ?></div>
+
+    <div id="pnlContent">
+        <?php renderPageContent($pageID); ?>
     </div>
 
 </body>
@@ -37,18 +34,49 @@
 </html>
 
 <?php
-
-function getContent()
+function generateButtons()
 {
-    $pageID = common::getUrlValue("pageID");
-    
-    switch ($pageID)
-    {
-        case "notepad": include("pages/notepad.php"); break;
-        case "shopping": include("pages/shopping.php"); break;
-        case "lists": include("pages/lists.php"); break;
-        case "debug": include("pages/debug.php"); break;
-        case "info": include("pages/info.php"); break;
+    global $pageID;
+    renderButton($pageID === common::PAGE_NOTEPAD ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_NOTEPAD, getpageTitle(common::PAGE_NOTEPAD));
+    renderButton($pageID === common::PAGE_SHOPPING ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_SHOPPING, getpageTitle(common::PAGE_SHOPPING));
+    renderButton($pageID === common::PAGE_LISTS ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_LISTS, getpageTitle(common::PAGE_LISTS));
+    renderButton($pageID === common::PAGE_DEBUG ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_DEBUG, getpageTitle(common::PAGE_DEBUG));
+}
+
+function renderButton($class, $url, $text)
+{
+    echo "<a class='" . $class . "' href='" . $url . "'>" . $text . "</a>";
+}
+
+function getPageTitle($pageID)
+{
+    switch ($pageID) {
+        case common::PAGE_NOTEPAD:
+            return "Notepad";
+        case common::PAGE_SHOPPING:
+            return "Shopping";
+        case common::PAGE_LISTS:
+            return "Lists";
+        case common::PAGE_DEBUG:
+            return "Debug";
+    }
+}
+
+function renderPageContent($pageID)
+{
+    switch ($pageID) {
+        case common::PAGE_NOTEPAD:
+            include("views/vNotepad.php");
+            break;
+        case common::PAGE_SHOPPING:
+            include("views/vShopping.php");
+            break;
+        case common::PAGE_LISTS:
+            include("views/vLists.php");
+            break;
+        case common::PAGE_DEBUG:
+            include("views/vDebug.php");
+            break;
     }
 }
 ?>
