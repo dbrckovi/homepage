@@ -1,8 +1,19 @@
 <?php
-include_once("code/common.php");
-$pageID = common::getUrlValue("pageID");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/code/common.php");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/code/database.php");
+$id = common::getUrlValue("id");
 
-if ($pageID === null || common::isPageIDValid($pageID) === false) $pageID = common::PAGE_NOTEPAD;
+if (common::isGet()) {
+    if ($id == null) {
+        header("Location: index.php?id=1");
+        die();
+    }
+} else if (common::isPost()) {
+    $contents = file_get_contents('php://input');
+    $id = common::getUrlValue("id");
+    database::SaveNotepadContent($id, $contents);
+    die();
+} else die();
 ?>
 
 <!DOCTYPE html>
@@ -14,69 +25,62 @@ if ($pageID === null || common::isPageIDValid($pageID) === false) $pageID = comm
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/general.css">
-    <title>Document</title>
+    <title>brc.com.hr</title>
 </head>
+
+<script>
+    var currentlySaving = false;
+    var saveNeeded = false;
+
+    window.setInterval(periodicSave, 3000);
+
+    function periodicSave() {
+        if (saveNeeded === true && currentlySaving === false) {
+            saveNotepadText();
+        }
+    }
+
+    function setSaveNeeded() {
+        saveNeeded = true;
+        var lblSaveNeeded = document.getElementById("lblSaveNeeded");
+        lblSaveNeeded.classList.remove("invisible");
+    }
+
+    function saveNotepadText() {
+        currentlySaving = true;
+        const urlParams = new URLSearchParams(window.location.search);
+        var lblSaveNeeded = document.getElementById("lblSaveNeeded");
+        var text = window.document.getElementById("txtContents").value;
+        var id = urlParams.get('id');
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                lblSaveNeeded.classList.add("invisible");
+                currentlySaving = false;
+            }
+        };
+
+        xmlhttp.open("POST", "index.php?id=" + id, true);
+        xmlhttp.setRequestHeader("Content-type", "text/html");
+        xmlhttp.send(text);
+    }
+</script>
 
 <body>
 
     <div id="pnlButtons" class="row buttonPanel">
-        <?php generateButtons(); ?>
+        <?php database::getNotepadButtons("blueButton", "index.php"); ?>
     </div>
 
-    <div class="titleBar"><?php echo getPageTitle($pageID); ?></div>
 
-    <div id="pnlContent">
-        <?php renderPageContent($pageID); ?>
+    <div class="titleBar row">
+        <div class="col">
+            <?php echo database::getNotepadName($id); ?>
+        </div>
+        <div id="lblSaveNeeded" class="invisible col" style="width:20px">*</div>
     </div>
 
+    <textarea id="txtContents" class="textBox" onpaste="setSaveNeeded();" onchange="saveNotepadText();" onkeypress="setSaveNeeded();" oninput="setSaveNeeded();"><?php echo database::getNotepadContent($id); ?></textarea>
 </body>
 
 </html>
-
-<?php
-function generateButtons()
-{
-    global $pageID;
-    renderButton($pageID === common::PAGE_NOTEPAD ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_NOTEPAD, getpageTitle(common::PAGE_NOTEPAD));
-    renderButton($pageID === common::PAGE_SHOPPING ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_SHOPPING, getpageTitle(common::PAGE_SHOPPING));
-    renderButton($pageID === common::PAGE_LISTS ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_LISTS, getpageTitle(common::PAGE_LISTS));
-    renderButton($pageID === common::PAGE_DEBUG ? "greenButton" : "blueButton", "index.php?pageID=" . common::PAGE_DEBUG, getpageTitle(common::PAGE_DEBUG));
-}
-
-function renderButton($class, $url, $text)
-{
-    echo "<a class='" . $class . "' href='" . $url . "'>" . $text . "</a>";
-}
-
-function getPageTitle($pageID)
-{
-    switch ($pageID) {
-        case common::PAGE_NOTEPAD:
-            return "Notepad";
-        case common::PAGE_SHOPPING:
-            return "Shopping";
-        case common::PAGE_LISTS:
-            return "Lists";
-        case common::PAGE_DEBUG:
-            return "Debug";
-    }
-}
-
-function renderPageContent($pageID)
-{
-    switch ($pageID) {
-        case common::PAGE_NOTEPAD:
-            include("views/vNotepad.php");
-            break;
-        case common::PAGE_SHOPPING:
-            include("views/vShopping.php");
-            break;
-        case common::PAGE_LISTS:
-            include("views/vLists.php");
-            break;
-        case common::PAGE_DEBUG:
-            include("views/vDebug.php");
-            break;
-    }
-}
-?>
